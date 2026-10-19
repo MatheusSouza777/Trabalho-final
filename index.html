@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Empréstimo SENAI</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Biblioteca de ícones -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- ================= TELA 1: CADASTRO ================= -->
+        <div id="tela-cadastro" class="screen active">
+            <div class="card-cadastro fade-in">
+                <h1>Faça seu cadastro</h1>
+                <p class="subtitle">Preencha os dados abaixo para criar a sua conta e começar a usar o sistema</p>
+
+                <form id="form-cadastro">
+                    <div class="input-group">
+                        <label>Nome completo</label>
+                        <div class="input-box">
+                            <i class="ph ph-user"></i>
+                            <input type="text" id="nome-input" placeholder="Digite seu nome completo" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>E-mail institucional (SENAI)</label>
+                        <div class="input-box">
+                            <i class="ph ph-envelope-simple"></i>
+                            <input type="email" id="email-input" placeholder="exemplo.123@aluno.senai.br" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Senha</label>
+                        <div class="input-box">
+                            <i class="ph ph-lock-key"></i>
+                            <input type="password" id="senha" placeholder="Digite sua senha" required>
+                            <i class="ph ph-eye btn-eye" onclick="togglePassword('senha')"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Confirmar senha</label>
+                        <div class="input-box">
+                            <i class="ph ph-lock-key"></i>
+                            <input type="password" id="confirma-senha" placeholder="Confirme sua senha" required>
+                            <i class="ph ph-eye btn-eye" onclick="togglePassword('confirma-senha')"></i>
+                        </div>
+                        <span id="erro-senha" class="error-msg">As senhas não coincidem!</span>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="btn-cadastrar">
+                        Cadastrar <i class="ph ph-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="footer-note">
+                    <p>Seus dados estão seguros e serão usados apenas para fins do sistema SENAI.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TELA 2: DASHBOARD ================= -->
+        <div id="tela-dashboard" class="screen">
+            
+            <!-- Notificação Toast -->
+            <div id="toast" class="toast">
+                Notificação aqui
+            </div>
+
+            <!-- Menu Overlay escuro -->
+            <div id="menu-overlay" class="menu-overlay"></div>
+
+            <!-- Menu Lateral (Sidebar) -->
+            <aside id="sidebar" class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Menu</h3>
+                    <i class="ph ph-x btn-close-menu" id="close-menu"></i>
+                </div>
+                <ul class="sidebar-links">
+                    <li id="btn-abrir-historico"><i class="ph ph-clock-counter-clockwise"></i> Histórico de Empréstimos</li>
+                    <li><i class="ph ph-gear"></i> Configurações</li>
+                    <li><i class="ph ph-question"></i> Ajuda</li>
+                    <li id="btn-sair" class="logout"><i class="ph ph-sign-out"></i> Sair</li>
+                </ul>
+            </aside>
+
+            <!-- MODAL DE HISTÓRICO -->
+            <div id="modal-historico" class="modal-historico hide">
+                <div class="modal-historico-header">
+                    <h3>Histórico</h3>
+                    <i class="ph ph-x btn-close-modal" id="btn-close-historico"></i>
+                </div>
+                <div class="modal-historico-body">
+                    <ul id="lista-historico">
+                        <li class="empty-msg">Nenhum empréstimo realizado ainda.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <header class="header slide-down">
+                <div class="user-info">
+                    <div class="avatar"><i class="ph ph-user"></i></div>
+                    <span class="email" id="user-email-display">aluno@senai.br</span>
+                </div>
+                <i class="ph ph-list menu-icon" id="open-menu"></i>
+            </header>
+
+            <main class="dashboard-content fade-in">
+                <h2>Computador</h2>
+                
+                <div class="computer-display">
+                    <div class="drawing-sun">
+                        <svg viewBox="0 0 100 100" width="120" height="120" stroke="#F4D03F" stroke-width="4" fill="none" stroke-linecap="round">
+                            <circle cx="50" cy="50" r="30" stroke-dasharray="10 5" />
+                            <line x1="50" y1="5" x2="50" y2="15" />
+                            <line x1="50" y1="85" x2="50" y2="95" />
+                            <line x1="5" y1="50" x2="15" y2="50" />
+                            <line x1="85" y1="50" x2="95" y2="50" />
+                            <line x1="18" y1="18" x2="25" y2="25" />
+                            <line x1="75" y1="75" x2="82" y2="82" />
+                            <line x1="18" y1="82" x2="25" y2="75" />
+                        </svg>
+                    </div>
+                    
+                    <div id="computer-number" class="number"></div>
+                    <div class="line"></div>
+                    
+                    <!-- Campo para digitar o PC (Opcional) -->
+                    <div class="input-pc-container" id="container-input-pc">
+                        <input type="number" id="manual-pc-input" placeholder="Nº específico (opcional)" min="1">
+                    </div>
+                </div>
+
+                <button id="btn-action" class="btn-action">
+                    <span id="btn-text">REGISTRAR</span>
+                    <div id="loader" class="loader hide"></div>
+                </button>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="carregador">
+                    <label for="carregador">Carregador</label>
+                </div>
+
+                <div class="drawing-smile">
+                    <svg viewBox="0 0 100 100" width="80" height="80" stroke="#F4D03F" stroke-width="5" fill="none" stroke-linecap="round">
+                        <line x1="20" y1="30" x2="30" y2="40" />
+                        <line x1="70" y1="30" x2="60" y2="40" />
+                        <path d="M 20 60 Q 50 90 80 60" />
+                    </svg>
+                </div>
+            </main>
+            
+            <div class="drawing-clouds">
+                <svg viewBox="0 0 400 150" width="100%" height="150" stroke="#F4D03F" stroke-width="4" fill="none" stroke-linecap="round">
+                    <path d="M -20 100 Q 20 80 50 120 Q 90 60 140 130 Q 170 110 200 150" />
+                    <path d="M 300 150 Q 320 100 360 120 Q 380 90 420 110" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
