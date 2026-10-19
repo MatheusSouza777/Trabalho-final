@@ -37,7 +37,7 @@ formCadastro.addEventListener('submit', function(e) {
     document.getElementById('tela-dashboard').classList.add('active');
 });
 
-// 3. Lógica do Menu Lateral e Modal de Histórico
+// 3. Lógica do Menu Lateral, Tema e WhatsApp
 const openMenuBtn = document.getElementById('open-menu');
 const closeMenuBtn = document.getElementById('close-menu');
 const sidebar = document.getElementById('sidebar');
@@ -46,6 +46,15 @@ const btnSair = document.getElementById('btn-sair');
 const btnAbrirHistorico = document.getElementById('btn-abrir-historico');
 const modalHistorico = document.getElementById('modal-historico');
 const btnCloseHistorico = document.getElementById('btn-close-historico');
+const appContainer = document.getElementById('app-container');
+
+// Botão Tema Claro/Escuro
+const btnThemeToggle = document.getElementById('btn-theme-toggle');
+const themeIcon = btnThemeToggle.querySelector('i');
+const themeText = document.getElementById('theme-text');
+
+// Botão Ajuda / WhatsApp
+const btnAjuda = document.getElementById('btn-ajuda');
 
 function toggleMenu() {
     sidebar.classList.toggle('open');
@@ -57,7 +66,7 @@ closeMenuBtn.addEventListener('click', toggleMenu);
 menuOverlay.addEventListener('click', () => {
     sidebar.classList.remove('open');
     menuOverlay.classList.remove('show');
-    modalHistorico.classList.remove('show'); // Fecha histórico se clicar fora
+    modalHistorico.classList.remove('show');
 });
 
 btnSair.addEventListener('click', function() {
@@ -67,15 +76,34 @@ btnSair.addEventListener('click', function() {
     document.getElementById('tela-cadastro').classList.add('active');
 });
 
-// Abre Histórico
-btnAbrirHistorico.addEventListener('click', () => {
-    sidebar.classList.remove('open'); // Fecha o menu lateral
-    modalHistorico.classList.remove('hide');
-    // Pequeno atraso para a animação do CSS funcionar
-    setTimeout(() => { modalHistorico.classList.add('show'); }, 10);
+// Alternar Modo Claro / Escuro
+btnThemeToggle.addEventListener('click', () => {
+    // Adiciona a classe light-mode no container principal
+    appContainer.classList.toggle('light-mode');
+    
+    // Troca o ícone e o texto
+    if (appContainer.classList.contains('light-mode')) {
+        themeIcon.classList.replace('ph-sun', 'ph-moon');
+        themeText.innerText = 'Modo Escuro';
+    } else {
+        themeIcon.classList.replace('ph-moon', 'ph-sun');
+        themeText.innerText = 'Modo Claro';
+    }
 });
 
-// Fecha Histórico
+// Abrir WhatsApp
+btnAjuda.addEventListener('click', () => {
+    const numeroTeste = '5511999999999'; // Número fictício/teste
+    const mensagem = encodeURIComponent('Olá! Preciso de ajuda com o Sistema de Empréstimo de Computadores do SENAI.');
+    window.open(`https://wa.me/${numeroTeste}?text=${mensagem}`, '_blank');
+});
+
+// Abre/Fecha Histórico
+btnAbrirHistorico.addEventListener('click', () => {
+    sidebar.classList.remove('open'); 
+    modalHistorico.classList.remove('hide');
+    setTimeout(() => { modalHistorico.classList.add('show'); }, 10);
+});
 btnCloseHistorico.addEventListener('click', () => {
     modalHistorico.classList.remove('show');
     menuOverlay.classList.remove('show');
@@ -93,11 +121,9 @@ const toast = document.getElementById('toast');
 const checkboxCarregador = document.getElementById('carregador');
 const listaHistorico = document.getElementById('lista-historico');
 
-// Array para guardar os históricos
 let historicoArray = []; 
-let currentPcNumber = null; // Guarda o PC atual em uso
+let currentPcNumber = null;
 
-// Função para atualizar a tela de histórico
 function atualizarHistorico(acao, numeroPc, carregador) {
     const dataAtual = new Date();
     const horaFormatada = dataAtual.getHours().toString().padStart(2, '0') + ':' + dataAtual.getMinutes().toString().padStart(2, '0');
@@ -110,22 +136,20 @@ function atualizarHistorico(acao, numeroPc, carregador) {
         html: `<li class="${classeLi}">${icone} ${acao} - PC ${numeroPc}${textoCarregador} - às ${horaFormatada}</li>`
     };
 
-    historicoArray.unshift(registro); // Adiciona no início da lista (mais recentes primeiro)
+    historicoArray.unshift(registro); 
     renderizarHistorico();
 }
 
 function renderizarHistorico() {
-    listaHistorico.innerHTML = ''; // Limpa a lista
+    listaHistorico.innerHTML = ''; 
     if (historicoArray.length === 0) {
         listaHistorico.innerHTML = '<li class="empty-msg">Nenhum empréstimo realizado ainda.</li>';
         return;
     }
-    // Adiciona os itens na tela
     historicoArray.forEach(item => {
         listaHistorico.innerHTML += item.html;
     });
 }
-
 
 btnAction.addEventListener('click', function() {
     btnAction.disabled = true;
@@ -138,60 +162,43 @@ btnAction.addEventListener('click', function() {
         loader.classList.add('hide');
 
         if (!btnAction.classList.contains('cancelar')) {
-            // ================= MODO REGISTRAR (EMPRÉSTIMO) =================
-            
-            // Verifica se o usuário digitou algo no input
+            // == MODO EMPRÉSTIMO ==
             let numeroDigitado = manualPcInput.value.trim();
 
             if (numeroDigitado !== "" && parseInt(numeroDigitado) > 0) {
-                // Pega o número digitado
                 currentPcNumber = parseInt(numeroDigitado);
             } else {
-                // Sorteia um número de 1 a 50 se tiver vazio
                 currentPcNumber = Math.floor(Math.random() * 50) + 1;
             }
 
-            // Mostra no display gigante
             computerNumberDisplay.innerText = currentPcNumber;
-            
-            // Esconde o campo de digitar input
             containerInputPc.classList.add('hide');
-
-            // Salva no histórico
             atualizarHistorico('Empréstimo', currentPcNumber, checkboxCarregador.checked);
 
-            // Muda visual do botão
             btnText.innerText = 'CANCELAR / DEVOLVER';
             btnAction.classList.add('cancelar');
             checkboxCarregador.disabled = true; 
 
-            // Mostra Notificação
             toast.innerText = `Comprovante do PC ${currentPcNumber} enviado pro E-mail.`;
             toast.classList.remove('cancel-mode');
             toast.classList.add('show');
             setTimeout(() => { toast.classList.remove('show'); }, 4000);
 
         } else {
-            // ================= MODO CANCELAR (DEVOLUÇÃO) =================
-            
-            // Salva devolução no histórico antes de limpar a variável
+            // == MODO DEVOLUÇÃO ==
             atualizarHistorico('Devolução', currentPcNumber, false);
 
-            // Limpa a tela
             computerNumberDisplay.innerText = '';
-            manualPcInput.value = ''; // Limpa o que foi digitado
+            manualPcInput.value = ''; 
             currentPcNumber = null;
             
-            // Mostra o campo de input de novo
             containerInputPc.classList.remove('hide');
 
-            // Restaura botão e checkbox
             btnText.innerText = 'REGISTRAR';
             btnAction.classList.remove('cancelar');
             checkboxCarregador.disabled = false; 
             checkboxCarregador.checked = false; 
 
-            // Mostra Notificação
             toast.innerText = 'Computador devolvido/cancelado com sucesso.';
             toast.classList.add('cancel-mode');
             toast.classList.add('show');
