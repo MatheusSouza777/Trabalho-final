@@ -2,207 +2,186 @@
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     const icon = input.nextElementSibling;
-    
     if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.replace('ph-eye', 'ph-eye-closed');
+        input.type = 'text'; icon.classList.replace('ph-eye', 'ph-eye-closed');
     } else {
-        input.type = 'password';
-        icon.classList.replace('ph-eye-closed', 'ph-eye');
+        input.type = 'password'; icon.classList.replace('ph-eye-closed', 'ph-eye');
     }
 }
 
-// 2. Lógica de Cadastro e Validação
-const formCadastro = document.getElementById('form-cadastro');
-const senha = document.getElementById('senha');
-const confirmaSenha = document.getElementById('confirma-senha');
-const erroSenha = document.getElementById('erro-senha');
+// 2. Transições e Elementos Globais
+const telaCadastro = document.getElementById('tela-cadastro');
+const telaDashboard = document.getElementById('tela-dashboard');
+const telaPerfil = document.getElementById('tela-perfil');
 const emailInput = document.getElementById('email-input');
 const emailDisplay = document.getElementById('user-email-display');
+const editEmail = document.getElementById('edit-email');
 
-formCadastro.addEventListener('submit', function(e) {
+document.getElementById('form-cadastro').addEventListener('submit', function(e) {
     e.preventDefault();
-    if (senha.value !== confirmaSenha.value) {
-        erroSenha.style.display = 'block';
-        senha.style.borderColor = '#CC0000';
-        confirmaSenha.style.borderColor = '#CC0000';
-        return; 
+    const senha = document.getElementById('senha');
+    const confirma = document.getElementById('confirma-senha');
+    const erro = document.getElementById('erro-senha');
+    
+    if (senha.value !== confirma.value) {
+        erro.style.display = 'block'; return; 
     }
-    erroSenha.style.display = 'none';
-    senha.style.borderColor = '#bbb';
-    confirmaSenha.style.borderColor = '#bbb';
+    
     emailDisplay.innerText = emailInput.value;
-
-    document.getElementById('tela-cadastro').classList.remove('active');
-    document.getElementById('tela-dashboard').classList.add('active');
+    editEmail.value = emailInput.value; // Já preenche o form de edição de perfil
+    
+    telaCadastro.classList.remove('active');
+    telaDashboard.classList.add('active');
 });
 
-// 3. Lógica do Menu Lateral, Tema e WhatsApp
-const openMenuBtn = document.getElementById('open-menu');
-const closeMenuBtn = document.getElementById('close-menu');
+// 3. Lógica do Menu e Temas
 const sidebar = document.getElementById('sidebar');
 const menuOverlay = document.getElementById('menu-overlay');
-const btnSair = document.getElementById('btn-sair');
-const btnAbrirHistorico = document.getElementById('btn-abrir-historico');
 const modalHistorico = document.getElementById('modal-historico');
-const btnCloseHistorico = document.getElementById('btn-close-historico');
-const appContainer = document.getElementById('app-container');
-
-// Botão Tema Claro/Escuro
-const btnThemeToggle = document.getElementById('btn-theme-toggle');
-const themeIcon = btnThemeToggle.querySelector('i');
-const themeText = document.getElementById('theme-text');
-
-// Botão Ajuda / WhatsApp
-const btnAjuda = document.getElementById('btn-ajuda');
 
 function toggleMenu() {
     sidebar.classList.toggle('open');
     menuOverlay.classList.toggle('show');
 }
 
-openMenuBtn.addEventListener('click', toggleMenu);
-closeMenuBtn.addEventListener('click', toggleMenu);
+document.getElementById('open-menu').addEventListener('click', toggleMenu);
+document.getElementById('close-menu').addEventListener('click', toggleMenu);
 menuOverlay.addEventListener('click', () => {
     sidebar.classList.remove('open');
     menuOverlay.classList.remove('show');
     modalHistorico.classList.remove('show');
 });
 
-btnSair.addEventListener('click', function() {
-    toggleMenu(); 
-    formCadastro.reset(); 
-    document.getElementById('tela-dashboard').classList.remove('active');
-    document.getElementById('tela-cadastro').classList.add('active');
+document.getElementById('btn-sair').addEventListener('click', () => {
+    toggleMenu(); document.getElementById('form-cadastro').reset();
+    telaDashboard.classList.remove('active'); telaCadastro.classList.add('active');
 });
 
-// Alternar Modo Claro / Escuro
-btnThemeToggle.addEventListener('click', () => {
-    // Adiciona a classe light-mode no container principal
-    appContainer.classList.toggle('light-mode');
-    
-    // Troca o ícone e o texto
-    if (appContainer.classList.contains('light-mode')) {
-        themeIcon.classList.replace('ph-sun', 'ph-moon');
-        themeText.innerText = 'Modo Escuro';
+document.getElementById('btn-theme-toggle').addEventListener('click', () => {
+    document.getElementById('app-container').classList.toggle('light-mode');
+    const icon = document.querySelector('#btn-theme-toggle i');
+    const txt = document.getElementById('theme-text');
+    if (document.getElementById('app-container').classList.contains('light-mode')) {
+        icon.classList.replace('ph-sun', 'ph-moon'); txt.innerText = 'Modo Escuro';
     } else {
-        themeIcon.classList.replace('ph-moon', 'ph-sun');
-        themeText.innerText = 'Modo Claro';
+        icon.classList.replace('ph-moon', 'ph-sun'); txt.innerText = 'Modo Claro';
     }
 });
 
-// Abrir WhatsApp
-btnAjuda.addEventListener('click', () => {
-    const numeroTeste = '5511999999999'; // Número fictício/teste
-    const mensagem = encodeURIComponent('Olá! Preciso de ajuda com o Sistema de Empréstimo de Computadores do SENAI.');
-    window.open(`https://wa.me/${numeroTeste}?text=${mensagem}`, '_blank');
+document.getElementById('btn-ajuda').addEventListener('click', () => {
+    window.open(`https://wa.me/5511999999999?text=Olá! Preciso de ajuda com o Sistema do SENAI.`, '_blank');
 });
 
-// Abre/Fecha Histórico
-btnAbrirHistorico.addEventListener('click', () => {
-    sidebar.classList.remove('open'); 
-    modalHistorico.classList.remove('hide');
+document.getElementById('btn-abrir-historico').addEventListener('click', () => {
+    sidebar.classList.remove('open'); modalHistorico.classList.remove('hide');
     setTimeout(() => { modalHistorico.classList.add('show'); }, 10);
 });
-btnCloseHistorico.addEventListener('click', () => {
-    modalHistorico.classList.remove('show');
-    menuOverlay.classList.remove('show');
+document.getElementById('btn-close-historico').addEventListener('click', () => {
+    modalHistorico.classList.remove('show'); menuOverlay.classList.remove('show');
 });
 
-
-// 4. Lógica de Empréstimo, Input Manual e Histórico Dinâmico
+// 4. Empréstimo
 const btnAction = document.getElementById('btn-action');
 const btnText = document.getElementById('btn-text');
 const loader = document.getElementById('loader');
-const computerNumberDisplay = document.getElementById('computer-number');
-const manualPcInput = document.getElementById('manual-pc-input');
-const containerInputPc = document.getElementById('container-input-pc');
+const displayNum = document.getElementById('computer-number');
+const inputPc = document.getElementById('manual-pc-input');
 const toast = document.getElementById('toast');
-const checkboxCarregador = document.getElementById('carregador');
-const listaHistorico = document.getElementById('lista-historico');
+const checkCarregador = document.getElementById('carregador');
 
-let historicoArray = []; 
-let currentPcNumber = null;
+let historicoArray = []; let currentPc = null;
 
-function atualizarHistorico(acao, numeroPc, carregador) {
-    const dataAtual = new Date();
-    const horaFormatada = dataAtual.getHours().toString().padStart(2, '0') + ':' + dataAtual.getMinutes().toString().padStart(2, '0');
-    
-    let textoCarregador = carregador ? " (Com Carregador)" : "";
-    let classeLi = acao === 'Devolução' ? 'devolucao' : '';
-    let icone = acao === 'Devolução' ? '❌' : '✅';
-
-    const registro = {
-        html: `<li class="${classeLi}">${icone} ${acao} - PC ${numeroPc}${textoCarregador} - às ${horaFormatada}</li>`
-    };
-
-    historicoArray.unshift(registro); 
-    renderizarHistorico();
+function showToast(msg, error = false) {
+    toast.innerText = msg;
+    error ? toast.classList.add('cancel-mode') : toast.classList.remove('cancel-mode');
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 3000);
 }
 
-function renderizarHistorico() {
-    listaHistorico.innerHTML = ''; 
-    if (historicoArray.length === 0) {
-        listaHistorico.innerHTML = '<li class="empty-msg">Nenhum empréstimo realizado ainda.</li>';
-        return;
-    }
-    historicoArray.forEach(item => {
-        listaHistorico.innerHTML += item.html;
-    });
-}
-
-btnAction.addEventListener('click', function() {
-    btnAction.disabled = true;
-    btnText.classList.add('hide');
-    loader.classList.remove('hide');
-
+btnAction.addEventListener('click', () => {
+    btnAction.disabled = true; btnText.classList.add('hide'); loader.classList.remove('hide');
     setTimeout(() => {
-        btnAction.disabled = false;
-        btnText.classList.remove('hide');
-        loader.classList.add('hide');
-
+        btnAction.disabled = false; btnText.classList.remove('hide'); loader.classList.add('hide');
+        
         if (!btnAction.classList.contains('cancelar')) {
-            // == MODO EMPRÉSTIMO ==
-            let numeroDigitado = manualPcInput.value.trim();
-
-            if (numeroDigitado !== "" && parseInt(numeroDigitado) > 0) {
-                currentPcNumber = parseInt(numeroDigitado);
-            } else {
-                currentPcNumber = Math.floor(Math.random() * 50) + 1;
-            }
-
-            computerNumberDisplay.innerText = currentPcNumber;
-            containerInputPc.classList.add('hide');
-            atualizarHistorico('Empréstimo', currentPcNumber, checkboxCarregador.checked);
-
-            btnText.innerText = 'CANCELAR / DEVOLVER';
-            btnAction.classList.add('cancelar');
-            checkboxCarregador.disabled = true; 
-
-            toast.innerText = `Comprovante do PC ${currentPcNumber} enviado pro E-mail.`;
-            toast.classList.remove('cancel-mode');
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 4000);
-
-        } else {
-            // == MODO DEVOLUÇÃO ==
-            atualizarHistorico('Devolução', currentPcNumber, false);
-
-            computerNumberDisplay.innerText = '';
-            manualPcInput.value = ''; 
-            currentPcNumber = null;
+            currentPc = (inputPc.value && inputPc.value > 0) ? inputPc.value : Math.floor(Math.random() * 50) + 1;
+            displayNum.innerText = currentPc;
+            document.getElementById('container-input-pc').classList.add('hide');
             
-            containerInputPc.classList.remove('hide');
-
-            btnText.innerText = 'REGISTRAR';
-            btnAction.classList.remove('cancelar');
-            checkboxCarregador.disabled = false; 
-            checkboxCarregador.checked = false; 
-
-            toast.innerText = 'Computador devolvido/cancelado com sucesso.';
-            toast.classList.add('cancel-mode');
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            historicoArray.unshift({ html: `<li>✅ Empréstimo - PC ${currentPc} ${checkCarregador.checked ? "(Com Carregador)" : ""}</li>`});
+            document.getElementById('lista-historico').innerHTML = historicoArray.map(i => i.html).join('');
+            
+            btnText.innerText = 'CANCELAR / DEVOLVER'; btnAction.classList.add('cancelar');
+            checkCarregador.disabled = true;
+            showToast(`Comprovante do PC ${currentPc} enviado.`);
+        } else {
+            historicoArray.unshift({ html: `<li class="devolucao">❌ Devolução - PC ${currentPc}</li>`});
+            document.getElementById('lista-historico').innerHTML = historicoArray.map(i => i.html).join('');
+            
+            displayNum.innerText = ''; inputPc.value = ''; currentPc = null;
+            document.getElementById('container-input-pc').classList.remove('hide');
+            
+            btnText.innerText = 'REGISTRAR'; btnAction.classList.remove('cancelar');
+            checkCarregador.disabled = false; checkCarregador.checked = false;
+            showToast('Computador devolvido com sucesso.', true);
         }
     }, 1000);
+});
+
+// 5. Lógica de Editar Perfil (FOTO, NOME e EMAIL)
+const btnAbrirPerfil = document.getElementById('btn-abrir-perfil');
+const btnVoltarDashboard = document.getElementById('btn-voltar-dashboard');
+const btnTrocarFoto = document.getElementById('btn-trocar-foto');
+const inputFoto = document.getElementById('input-foto');
+const avatarPreview = document.getElementById('avatar-preview');
+const avatarDisplay = document.getElementById('user-avatar-display');
+const editApelido = document.getElementById('edit-apelido');
+const btnSalvarPerfil = document.getElementById('btn-salvar-perfil');
+
+// Abrir e Fechar tela de perfil
+btnAbrirPerfil.addEventListener('click', () => {
+    telaDashboard.classList.remove('active');
+    telaPerfil.classList.add('active');
+});
+
+btnVoltarDashboard.addEventListener('click', () => {
+    telaPerfil.classList.remove('active');
+    telaDashboard.classList.add('active');
+});
+
+// Trocar Foto (Abre o gerenciador de arquivos)
+btnTrocarFoto.addEventListener('click', () => {
+    inputFoto.click();
+});
+
+inputFoto.addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.addEventListener('load', function() {
+            // Aplica a imagem como fundo das duas bolinhas de avatar
+            avatarPreview.style.backgroundImage = `url(${this.result})`;
+            avatarDisplay.style.backgroundImage = `url(${this.result})`;
+            
+            // Esconde os ícones de bonequinho originais
+            document.getElementById('icon-avatar-preview').style.display = 'none';
+            document.getElementById('icon-avatar-display').style.display = 'none';
+        });
+        reader.readAsDataURL(file);
+    }
+});
+
+// Salvar as informações novas
+btnSalvarPerfil.addEventListener('click', () => {
+    // Se digitou apelido, mostra apelido. Se não, mostra o e-mail editado.
+    if (editApelido.value.trim() !== "") {
+        emailDisplay.innerText = editApelido.value;
+    } else if (editEmail.value.trim() !== "") {
+        emailDisplay.innerText = editEmail.value;
+    }
+    
+    // Volta pro dashboard
+    telaPerfil.classList.remove('active');
+    telaDashboard.classList.add('active');
+    showToast("Perfil atualizado com sucesso!");
 });

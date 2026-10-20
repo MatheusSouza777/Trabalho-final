@@ -70,7 +70,6 @@
             <div id="toast" class="toast">Notificação aqui</div>
             <div id="menu-overlay" class="menu-overlay"></div>
 
-            <!-- Menu Lateral (Sidebar) -->
             <aside id="sidebar" class="sidebar">
                 <div class="sidebar-header">
                     <h3>Menu</h3>
@@ -84,7 +83,6 @@
                 </ul>
             </aside>
 
-            <!-- MODAL DE HISTÓRICO -->
             <div id="modal-historico" class="modal-historico hide">
                 <div class="modal-historico-header">
                     <h3>Histórico</h3>
@@ -98,8 +96,9 @@
             </div>
 
             <header class="header slide-down">
-                <div class="user-info">
-                    <div class="avatar"><i class="ph ph-user"></i></div>
+                <!-- Transformei essa área em um botão clicável -->
+                <div class="user-info" id="btn-abrir-perfil" title="Editar Perfil">
+                    <div class="avatar" id="user-avatar-display"><i class="ph ph-user" id="icon-avatar-display"></i></div>
                     <span class="email" id="user-email-display">aluno@senai.br</span>
                 </div>
                 <i class="ph ph-list menu-icon" id="open-menu"></i>
@@ -109,7 +108,6 @@
                 <h2>Computador</h2>
                 
                 <div class="computer-display">
-                    <!-- Desenho do Sol -->
                     <div class="drawing-sun">
                         <svg viewBox="0 0 100 100" width="120" height="120" stroke-width="4" fill="none" stroke-linecap="round">
                             <circle cx="50" cy="50" r="30" stroke-dasharray="10 5" />
@@ -141,7 +139,6 @@
                     <label for="carregador">Carregador</label>
                 </div>
 
-                <!-- Desenho do Sorriso -->
                 <div class="drawing-smile">
                     <svg viewBox="0 0 100 100" width="80" height="80" stroke-width="5" fill="none" stroke-linecap="round">
                         <line x1="20" y1="30" x2="30" y2="40" />
@@ -151,7 +148,6 @@
                 </div>
             </main>
             
-            <!-- Desenho das Nuvens -->
             <div class="drawing-clouds">
                 <svg viewBox="0 0 400 150" width="100%" height="150" stroke-width="4" fill="none" stroke-linecap="round">
                     <path d="M -20 100 Q 20 80 50 120 Q 90 60 140 130 Q 170 110 200 150" />
@@ -159,6 +155,48 @@
                 </svg>
             </div>
         </div>
+
+        <!-- ================= TELA 3: EDITAR PERFIL ================= -->
+        <div id="tela-perfil" class="screen">
+            <div class="perfil-container fade-in">
+                <div class="perfil-header">
+                    <i class="ph ph-arrow-left btn-voltar" id="btn-voltar-dashboard"></i>
+                    <h2>Editar Perfil</h2>
+                    <div style="width: 24px;"></div> <!-- Espaçador para centralizar título -->
+                </div>
+
+                <div class="perfil-content">
+                    <div class="avatar-edit-section">
+                        <div class="avatar grande" id="avatar-preview"><i class="ph ph-user" id="icon-avatar-preview"></i></div>
+                        <button class="btn-secundario" id="btn-trocar-foto">
+                            <i class="ph ph-camera"></i> Trocar Foto
+                        </button>
+                        <input type="file" id="input-foto" accept="image/*" class="hide">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Apelido / Como quer ser chamado?</label>
+                        <div class="input-box">
+                            <i class="ph ph-identification-card"></i>
+                            <input type="text" id="edit-apelido" placeholder="Ex: JoãoZinho">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>E-mail de acesso</label>
+                        <div class="input-box">
+                            <i class="ph ph-envelope-simple"></i>
+                            <input type="email" id="edit-email" placeholder="Seu e-mail atual">
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" id="btn-salvar-perfil">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script src="script.js"></script>
